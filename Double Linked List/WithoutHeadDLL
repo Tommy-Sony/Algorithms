@@ -1,0 +1,120 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+//헤드노드 없이 이중연결리스트에 접근
+typedef struct treeNode {
+	int key;
+	struct treeNode *left;
+	struct treeNode *right;
+}treeNode;
+
+treeNode* foundedNode = NULL;
+
+void displayInorder(treeNode* root) {
+	treeNode *p = root;
+	if (root) {
+		printf("%d ", root->key);
+		displayInorder(root->left);
+		displayInorder(root->right);
+	}
+}
+
+treeNode *searchBST(treeNode* root, int x) {
+	if (root) {
+		if (root->key == x) {
+			foundedNode = root;
+		}
+		searchBST(root->left, x);
+		searchBST(root->right, x);
+	}
+}
+
+treeNode *insertNode(treeNode *root, int x, int y, int z) {
+	treeNode *newNode, *lNode, *rNode;
+	treeNode *p;
+
+	lNode = (treeNode*)malloc(sizeof(treeNode));
+	rNode = (treeNode*)malloc(sizeof(treeNode));
+
+	lNode->left = NULL;
+	lNode->right = NULL;
+	rNode->left = NULL;
+	rNode->right = NULL;
+
+	if (root == NULL) {
+		newNode = (treeNode*)malloc(sizeof(treeNode));
+		p = newNode;
+		newNode->key = x;
+	}
+	else {
+		searchBST(root, x);
+		p = foundedNode;
+	}
+
+	if (y != 0) {
+		lNode->key = y;
+		p->left = lNode;
+	}
+
+	if (z != 0) {
+		rNode->key = z;
+		p->right = rNode;
+	}
+	return p;
+}
+
+void print(treeNode *root, char *searchArr) {
+	int i = 0;
+	treeNode *p;
+
+	p = root;
+
+	for (i = 0; i <= strlen(searchArr); i++) {
+
+		printf(" %d", p->key);
+
+		if (*(searchArr + i) == 'L') {
+			p = p->left;
+		}
+		else if (*(searchArr + i) == 'R') {
+			p = p->right;
+		}
+	}
+
+	printf("\n");
+}
+
+int main() {
+	treeNode* root = NULL;
+	char searchArr[101] = "";
+	int cnt, i, searchCnt;
+	int x, y, z;
+
+	scanf("%d", &cnt);
+	getchar();
+
+	for (i = 0; i < cnt; i++) {
+		scanf("%d %d %d", &x, &y, &z);
+		getchar();
+		if (i == 0) {
+			root = insertNode(root, x, y, z);
+		}
+		else {
+			insertNode(root, x, y, z);
+		}
+	}
+
+	/*displayInorder(root);
+	printf("\n");
+	*/
+
+	scanf("%d", &searchCnt);
+
+	for (i = 0; i < searchCnt; i++) {
+		scanf("%s", searchArr);
+		print(root, searchArr);
+	}
+
+	return 0;
+}
